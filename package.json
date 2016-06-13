@@ -1,20 +1,21 @@
 {
-  "name": "website",
+  "name": "calculator",
   "version": "2.0.0",
-  "description": "豆包网新版移动端网站",
+  "description": "One Calculator for Javascript",
   "main": "gulpfile.js",
   "directories": {
     "test": "test"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start":"gulp serve"
   },
   "repository": {
     "type": "git",
-    "url": "git@git.coding.net:dctxf/websiteMobile.git"
+    "url": "git@git.coding.net:dctxf/calculator.git"
   },
   "keywords": [
-    "豆包网"
+    "calculator"
   ],
   "author": "dctxf",
   "license": "ISC",

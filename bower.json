@@ -1,13 +1,13 @@
 {
-  "name": "websiteMobile",
-  "description": "豆包网新版网站",
+  "name": "calculator",
+  "description": "One Calculator for Javascript",
   "main": "gulpfile.js",
   "authors": [
     "dctxf"
   ],
   "license": "ISC",
   "keywords": [
-    "appointment",
+    "calculator",
     "dctxf"
   ],
   "moduleType": [],
