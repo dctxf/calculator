@@ -1,0 +1,26 @@
+{
+  "name": "websiteMobile",
+  "description": "豆包网新版网站",
+  "main": "gulpfile.js",
+  "authors": [
+    "dctxf"
+  ],
+  "license": "ISC",
+  "keywords": [
+    "appointment",
+    "dctxf"
+  ],
+  "moduleType": [],
+  "homepage": "",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "devDependencies": {
+    "normalize-scss": "^3.0.3"
+  }
+}
