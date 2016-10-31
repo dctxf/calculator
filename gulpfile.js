@@ -1,135 +1,173 @@
-'use strict';
-var gulp = require('gulp');
+// generated on 2016-10-31 using generator-webapp 2.1.0
+const gulp = require('gulp');
+const gulpLoadPlugins = require('gulp-load-plugins');
+const browserSync = require('browser-sync');
+const del = require('del');
+const wiredep = require('wiredep').stream;
 
-var gulpSequence = require('gulp-sequence');
+const $ = gulpLoadPlugins();
+const reload = browserSync.reload;
 
-var useref = require('gulp-useref');
-var gulpif = require('gulp-if');
-
-var sass = require('gulp-sass'); //sass编译
-var minifyCss = require('gulp-minify-css'); //css压缩
-var minifyHtml = require('gulp-minify-html');
-var csscomb = require('gulp-csscomb'); //css排序
-var rename = require("gulp-rename"); //重命名
-var autoprefixer = require('gulp-autoprefixer'); //css兼容前缀补全
-var clean = require('gulp-dest-clean');    //清空目录
-
-var uglify = require('gulp-uglify');    //js压缩
-var concat = require('gulp-concat');  //js合并
-
-var imagemin = require('gulp-imagemin');  //图片压缩
-var pngquant = require('imagemin-pngquant');  //png压缩
-
-var browserSync = require('browser-sync').create(); //本地服务和浏览器自动刷新
-var reload      = browserSync.reload; //浏览器重载
-var myip = require('my-ip');  //ip获取
-
-
-/**
- * task
- */
-
-gulp.task('useref',['css'], function() {
-  return gulp.src('./app/*.html')
-    .pipe(useref())
-    .pipe(gulpif('*.js', uglify()))
-    .pipe(gulpif('*.css', minifyCss()))
-    .pipe(gulp.dest('./dist/'));
+gulp.task('styles', () => {
+  return gulp.src('app/styles/*.scss')
+    .pipe($.plumber())
+    .pipe($.sourcemaps.init())
+    .pipe($.sass.sync({
+      outputStyle: 'expanded',
+      precision: 10,
+      includePaths: ['.']
+    }).on('error', $.sass.logError))
+    .pipe($.autoprefixer({browsers: ['> 1%', 'last 2 versions', 'Firefox ESR']}))
+    .pipe($.sourcemaps.write())
+    .pipe(gulp.dest('.tmp/styles'))
+    .pipe(reload({stream: true}));
 });
 
-
-// css清理-编译-排序-压缩-补全-重命名
-gulp.task('css', function() {
-  return gulp.src('./app/sass/**/*.scss')
-    .pipe(sass().on('error', sass.logError))
-    .pipe(csscomb())
-    .pipe(autoprefixer({
-      browsers: [
-        "ie >= 8",
-        "ie_mob >= 10",
-        "ff >= 26",
-        "chrome >= 30",
-        "safari >= 6",
-        "opera >= 23",
-        "ios >= 5",
-        "android >= 2.3",
-        "bb >= 10"
-      ],
-      cascade: false
-    }))
-    .pipe(gulp.dest('./.tmp/stylesheets/'))
+gulp.task('scripts', () => {
+  return gulp.src('app/scripts/**/*.js')
+    .pipe($.plumber())
+    .pipe($.sourcemaps.init())
+    .pipe($.babel())
+    .pipe($.sourcemaps.write('.'))
+    .pipe(gulp.dest('.tmp/scripts'))
+    .pipe(reload({stream: true}));
 });
 
+function lint(files, options) {
+  return gulp.src(files)
+    .pipe(reload({stream: true, once: true}))
+    .pipe($.eslint(options))
+    .pipe($.eslint.format())
+    .pipe($.if(!browserSync.active, $.eslint.failAfterError()));
+}
 
-// 目录文件拷贝[未做处理的文件直接拷贝]
-gulp.task('copy',['favicon','data'],function() {
+gulp.task('lint', () => {
+  return lint('app/scripts/**/*.js', {
+    fix: true
+  })
+    .pipe(gulp.dest('app/scripts'));
+});
+gulp.task('lint:test', () => {
+  return lint('test/spec/**/*.js', {
+    fix: true,
+    env: {
+      mocha: true
+    }
+  })
+    .pipe(gulp.dest('test/spec/**/*.js'));
 });
 
-
-gulp.task('favicon',function(){
-  return gulp.src('./app/favicon.ico')
-    .pipe(gulp.dest('./dist/'));
+gulp.task('html', ['styles', 'scripts'], () => {
+  return gulp.src('app/*.html')
+    .pipe($.useref({searchPath: ['.tmp', 'app', '.']}))
+    .pipe($.if('*.js', $.uglify()))
+    .pipe($.if('*.css', $.cssnano({safe: true, autoprefixer: false})))
+    .pipe($.if('*.html', $.htmlmin({collapseWhitespace: true})))
+    .pipe(gulp.dest('dist'));
 });
 
-gulp.task('data',function(){
-  return gulp.src('./app/data/*.json')
-    .pipe(gulp.dest('./dist/data/'));
-});
-
-// 目录文件清除
-gulp.task('clean',function() {
-  return gulp.src('./')
-    .pipe(clean('./.tmp/'))
-    .pipe(clean('./dist/'))
-});
-
-// 图片压缩
-gulp.task('images',function() {
-  return gulp.src('./app/images/**/*')
-    .pipe(clean('./dist/images/'))
-    .pipe(imagemin({
+gulp.task('images', () => {
+  return gulp.src('app/images/**/*')
+    .pipe($.cache($.imagemin({
       progressive: true,
-      svgoPlugins: [{removeViewBox: false}],
-      use: [pngquant()]
+      interlaced: true,
+      // don't remove IDs from SVGs, they are often used
+      // as hooks for embedding and styling
+      svgoPlugins: [{cleanupIDs: false}]
+    })))
+    .pipe(gulp.dest('dist/images'));
+});
+
+gulp.task('fonts', () => {
+  return gulp.src(require('main-bower-files')('**/*.{eot,svg,ttf,woff,woff2}', function (err) {})
+    .concat('app/fonts/**/*'))
+    .pipe(gulp.dest('.tmp/fonts'))
+    .pipe(gulp.dest('dist/fonts'));
+});
+
+gulp.task('extras', () => {
+  return gulp.src([
+    'app/*.*',
+    '!app/*.html'
+  ], {
+    dot: true
+  }).pipe(gulp.dest('dist'));
+});
+
+gulp.task('clean', del.bind(null, ['.tmp', 'dist']));
+
+gulp.task('serve', ['styles', 'scripts', 'fonts'], () => {
+  browserSync({
+    notify: false,
+    port: 9000,
+    server: {
+      baseDir: ['.tmp', 'app'],
+      routes: {
+        '/bower_components': 'bower_components'
+      }
+    }
+  });
+
+  gulp.watch([
+    'app/*.html',
+    'app/images/**/*',
+    '.tmp/fonts/**/*'
+  ]).on('change', reload);
+
+  gulp.watch('app/styles/**/*.scss', ['styles']);
+  gulp.watch('app/scripts/**/*.js', ['scripts']);
+  gulp.watch('app/fonts/**/*', ['fonts']);
+  gulp.watch('bower.json', ['wiredep', 'fonts']);
+});
+
+gulp.task('serve:dist', () => {
+  browserSync({
+    notify: false,
+    port: 9000,
+    server: {
+      baseDir: ['dist']
+    }
+  });
+});
+
+gulp.task('serve:test', ['scripts'], () => {
+  browserSync({
+    notify: false,
+    port: 9000,
+    ui: false,
+    server: {
+      baseDir: 'test',
+      routes: {
+        '/scripts': '.tmp/scripts',
+        '/bower_components': 'bower_components'
+      }
+    }
+  });
+
+  gulp.watch('app/scripts/**/*.js', ['scripts']);
+  gulp.watch('test/spec/**/*.js').on('change', reload);
+  gulp.watch('test/spec/**/*.js', ['lint:test']);
+});
+
+// inject bower components
+gulp.task('wiredep', () => {
+  gulp.src('app/styles/*.scss')
+    .pipe(wiredep({
+      ignorePath: /^(\.\.\/)+/
     }))
-    .pipe(gulp.dest('./dist/images'));
+    .pipe(gulp.dest('app/styles'));
+
+  gulp.src('app/*.html')
+    .pipe(wiredep({
+      ignorePath: /^(\.\.\/)*\.\./
+    }))
+    .pipe(gulp.dest('app'));
 });
 
-
-// 服务
-gulp.task('serve',['watch'], function() {
-    browserSync.init({
-        host: myip(), //获取本地IP
-        port: 8081, //设置端口号
-        server: {
-            baseDir: "./app/",  //设置本地目录
-            routes: {
-                "/bower_components": "bower_components",
-                "/.tmp": ".tmp",
-                "/.tmp/images":"app/images/"
-            }
-        },
-        ui: {
-          // UI端口设置
-          port: 8080,
-            weinre: {
-                port: 9090
-            }
-        },
-        open: "external",
-        //不显示在浏览器中的任何通知。
-        notify: false
-    });
+gulp.task('build', ['lint', 'html', 'images', 'fonts', 'extras'], () => {
+  return gulp.src('dist/**/*').pipe($.size({title: 'build', gzip: true}));
 });
 
-// 监听任务
-gulp.task('watch',['css'],function(){
-  gulp.watch("./app/sass/**/*.scss", ['css']);
-  gulp.watch("./.tmp/stylesheets/*.css").on('change',reload);
-  gulp.watch("./app/js/**/*.js").on('change',reload);
-  gulp.watch("./app/data/*.json").on('change',reload);
-  gulp.watch("./app/**/*.html").on('change',reload);
+gulp.task('default', ['clean'], () => {
+  gulp.start('build');
 });
-
-
-gulp.task('default',gulpSequence(['clean'],['useref','images','copy']));

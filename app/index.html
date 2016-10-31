@@ -1,46 +1,67 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-	<meta charset="UTF-8">
-	<title>calculator</title>
-	<!-- build:css ./css/calculator.css -->
-	<link rel="stylesheet" href="../bower_components/normalize-scss/normalize.css">
-	<link rel="stylesheet" href="../.tmp/stylesheets/calculator.css">
-	<!-- endbuild -->
-	<!-- build:js ./js/calculator.js -->
-	<script src="js/calculator.js"></script>
-	<script src="js/main.js"></script>
-	<!-- endbuild -->
-</head>
-<body>
-	<div class="main">
-		<div class="calculator" id="cal">
-			<label for="result" class="result"><input type="text" id="result" value="0" readonly="readonly"></label>
-			<ul class="btns" id="btns">
-				<li class="btn clear">C</li>
-				<li class="btn operator">+/-</li>
-				<li class="btn operator">%</li>
-				<li class="btn back">backspace</li>
-				<li class="btn num">1</li>
-				<li class="btn num">2</li>
-				<li class="btn num">3</li>
-				<li class="btn operator">+</li>
-				<li class="btn operator">-</li>
-				<li class="btn num">4</li>
-				<li class="btn num">5</li>
-				<li class="btn num">6</li>
-				<li class="btn operator">×</li>
-				<li class="btn operator">÷</li>
-				<li class="btn num">7</li>
-				<li class="btn num">8</li>
-				<li class="btn num">9</li>
-				<li class="btn operator">×²</li>
-				<li class="btn operator">√</li>
-				<li class="btn num zero">0</li>
-				<li class="btn num">.</li>
-				<li class="btn equal">=</li>
-			</ul>
-		</div>
-	</div>
-</body>
+<!doctype html>
+<html lang="">
+  <head>
+    <meta charset="utf-8">
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>calculator</title>
+
+    <link rel="apple-touch-icon" href="apple-touch-icon.png">
+    <!-- Place favicon.ico in the root directory -->
+
+    <!-- build:css styles/vendor.css -->
+    <!-- bower:css -->
+    <!-- endbower -->
+    <!-- endbuild -->
+
+    <!-- build:css styles/main.css -->
+    <link rel="stylesheet" href="styles/main.css">
+    <!-- endbuild -->
+
+  </head>
+  <body>
+    <!--[if lt IE 10]>
+      <p class="browserupgrade">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
+    <![endif]-->
+
+<div class="main">
+    <div class="calculator" id="cal">
+      <label for="result" class="result"><input type="text" id="result" value="0" readonly="readonly"></label>
+      <ul class="btns" id="btns">
+        <li class="btn clear">C</li>
+        <li class="btn operator">+/-</li>
+        <li class="btn operator">%</li>
+        <li class="btn back">backspace</li>
+        <li class="btn num">1</li>
+        <li class="btn num">2</li>
+        <li class="btn num">3</li>
+        <li class="btn operator">+</li>
+        <li class="btn operator">-</li>
+        <li class="btn num">4</li>
+        <li class="btn num">5</li>
+        <li class="btn num">6</li>
+        <li class="btn operator">×</li>
+        <li class="btn operator">÷</li>
+        <li class="btn num">7</li>
+        <li class="btn num">8</li>
+        <li class="btn num">9</li>
+        <li class="btn operator">×²</li>
+        <li class="btn operator">√</li>
+        <li class="btn num zero">0</li>
+        <li class="btn num">.</li>
+        <li class="btn equal">=</li>
+      </ul>
+    </div>
+  </div>
+
+
+    <!-- build:js scripts/vendor.js -->
+    <!-- bower:js -->
+    <!-- endbower -->
+    <!-- endbuild -->
+
+    <!-- build:js scripts/main.js -->
+    <script src="scripts/main.js"></script>
+    <!-- endbuild -->
+  </body>
 </html>
