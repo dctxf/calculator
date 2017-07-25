@@ -1,32 +1,31 @@
 <!doctype html>
 <html lang="">
-  <head>
-    <meta charset="utf-8">
-    <meta name="description" content="">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>calculator</title>
 
-    <link rel="apple-touch-icon" href="apple-touch-icon.png">
-    <!-- Place favicon.ico in the root directory -->
+<head>
+  <meta charset="utf-8">
+  <meta name="description" content="">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>calculator</title>
+  <link rel="apple-touch-icon" href="apple-touch-icon.png">
+  <!-- Place favicon.ico in the root directory -->
+  <!-- build:css styles/vendor.css -->
+  <!-- bower:css -->
+  <!-- endbower -->
+  <!-- endbuild -->
+  <!-- build:css styles/main.css -->
+  <link rel="stylesheet" href="styles/main.css">
+  <!-- endbuild -->
+</head>
 
-    <!-- build:css styles/vendor.css -->
-    <!-- bower:css -->
-    <!-- endbower -->
-    <!-- endbuild -->
-
-    <!-- build:css styles/main.css -->
-    <link rel="stylesheet" href="styles/main.css">
-    <!-- endbuild -->
-
-  </head>
-  <body>
-    <!--[if lt IE 10]>
+<body>
+  <!--[if lt IE 10]>
       <p class="browserupgrade">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
     <![endif]-->
-
-<div class="main">
+  <div class="main">
     <div class="calculator" id="cal">
-      <label for="result" class="result"><input type="text" id="result" value="0" readonly="readonly"></label>
+      <label for="result" class="result">
+        <input type="text" id="result" value="0" readonly="readonly">
+      </label>
       <ul class="btns" id="btns">
         <li class="btn clear">C</li>
         <li class="btn operator">+/-</li>
@@ -53,15 +52,13 @@
       </ul>
     </div>
   </div>
+  <!-- build:js scripts/vendor.js -->
+  <!-- bower:js -->
+  <!-- endbower -->
+  <!-- endbuild -->
+  <!-- build:js scripts/main.js -->
+  <script src="scripts/calc.js"></script>
+  <!-- endbuild -->
+</body>
 
-
-    <!-- build:js scripts/vendor.js -->
-    <!-- bower:js -->
-    <!-- endbower -->
-    <!-- endbuild -->
-
-    <!-- build:js scripts/main.js -->
-    <script src="scripts/main.js"></script>
-    <!-- endbuild -->
-  </body>
 </html>
